@@ -42,19 +42,24 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      - name: Verify .next exists
+      # 6️⃣ Verify build folder exists
+      - name: Verify .next folder
         run: |
+          echo "Current directory: $(pwd)"
           ls -la
           ls -la .next || echo "⚠️ .next folder not found"
 
-      - name: Check current directory
-        run: pwd
-
+      # 7️⃣ Upload the build artifact
       - name: Upload Next.js build artifact
-        if: success() && !cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: nextjs-build
-          path: |
-            .next
-          if-no-files-found: error
+          path: ./.next/** # ✅ important: use wildcard for hidden folder
+
+      # 8️⃣ (Optional) Upload additional assets (e.g. public/)
+      - name: Upload public assets
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-assets
+          path: ./public/**
