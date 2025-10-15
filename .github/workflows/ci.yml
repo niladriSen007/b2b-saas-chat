@@ -47,6 +47,9 @@ jobs:
           ls -la
           ls -la .next || echo "⚠️ .next folder not found"
 
+      - name: Check current directory
+        run: pwd
+        
       - name: Upload build artifacts
         if: success() && !cancelled()
         uses: actions/upload-artifact@v4
