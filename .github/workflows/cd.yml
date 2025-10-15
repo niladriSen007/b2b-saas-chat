@@ -36,9 +36,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
-          path: .
-          # ❌ remove run-id (not supported cross-workflow)
-          # ✅ rely on latest artifact from the triggered workflow
+          run-id: ${{ github.event.workflow_run.id }}
+          path: next-build.zip
+          github-token: ${{ github.token }}
 
       # 3️⃣ Verify downloaded file
       - name: Verify artifact contents
