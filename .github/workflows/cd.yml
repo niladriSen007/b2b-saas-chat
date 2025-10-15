@@ -1,7 +1,7 @@
 name: Deploy Next.js Application
 on:
   workflow_run:
-    workflows: ["B2B SAAS App CI Pipeline"]
+    workflows: ["B2b SAAS App CI Pipeline/workflow"]
     types:
       - completed
   workflow_dispatch:
@@ -33,15 +33,27 @@ jobs:
       - name: Download Next.js build artifact
         uses: actions/download-artifact@v4
         with:
-          name: nextjs-build
+          # Match either exact or hashed artifact name, e.g. "nextjs-build" or "nextjs-build-<sha>"
+          pattern: nextjs-build*
+          merge-multiple: true
           run-id: ${{ github.event.workflow_run.id }}
-          path: next-build.zip
+          path: .
           github-token: ${{ github.token }}
 
-      # 3️⃣ Unzip the build artifact
-      - name: Unzip build artifact
-        run: unzip next-build.zip -d .next
+      # 3️⃣ Verify build artifact
+      - name: Verify downloaded build
+        run: |
+          if [ -d ".next" ]; then
+            echo ".next directory found"
+            du -sh .next || true
+            ls -la .next | head -n 200 || true
+          else
+            echo "Error: .next directory not found after artifact download"
+            echo "Workspace contents:"
+            ls -la
+            exit 1
+          fi
 
       # 4️⃣ Deploy to Vercel
       - name: Deploy to Vercel
-        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm --name=B2BSaasChat
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --confirm --name=B2BSaasChat
