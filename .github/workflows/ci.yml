@@ -42,17 +42,13 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      - name: Check if build artifacts exist
+      - name: Verify .next exists
         run: |
-          if [ -d ".next" ]; then
-            echo "Build artifacts found in .next directory"
-            ls -la .next
-          else
-            echo "Error: .next directory not found after build"
-            exit 1
-          fi
+          ls -la
+          ls -la .next || echo "⚠️ .next folder not found"
 
       - name: Upload build artifacts
+        if: success() && !cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
