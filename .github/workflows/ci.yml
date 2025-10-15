@@ -49,11 +49,12 @@ jobs:
 
       - name: Check current directory
         run: pwd
-        
-      - name: Upload build artifacts
+
+      - name: Upload Next.js build artifact
         if: success() && !cancelled()
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
-          path: .next
+          name: nextjs-build
+          path: |
+            ./.next/**
           if-no-files-found: error
