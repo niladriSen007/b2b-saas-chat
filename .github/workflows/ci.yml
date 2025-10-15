@@ -56,5 +56,5 @@ jobs:
         with:
           name: nextjs-build
           path: |
-            ./.next
+            .next
           if-no-files-found: error
