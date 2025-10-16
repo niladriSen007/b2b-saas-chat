@@ -51,7 +51,7 @@ jobs:
       - name: Unzip build artifact
         run: |
           mkdir -p .next
-          unzip -o next-build.zip -d .next
+          unzip next-build.zip -d .next
 
       # 5️⃣ Deploy to Vercel
       - name: Deploy to Vercel
