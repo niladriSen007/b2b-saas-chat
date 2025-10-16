@@ -37,7 +37,7 @@ jobs:
         with:
           name: nextjs-build
           run-id: ${{ github.event.workflow_run.id }}
-          path: next-build.zip
+          path: .
           github-token: ${{ github.token }}
 
       # 3️⃣ Verify artifact contents
@@ -45,13 +45,10 @@ jobs:
         run: |
           echo "📦 Listing downloaded files:"
           ls -la
-          file next-build.zip || echo "⚠️ next-build.zip missing"
 
       # 4️⃣ Unzip the build artifact
       - name: Unzip build artifact
-        run: |
-          mkdir -p .next
-          unzip next-build.zip -d .next
+        run: unzip next-build.zip -d .next
 
       # 5️⃣ Deploy to Vercel
       - name: Deploy to Vercel
