@@ -13,17 +13,21 @@ import {
 import { Input } from "@/components/ui/input"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Plus } from "lucide-react"
+import { Loader2, Plus } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { createWorkspaceSchema } from "../_schemas/create-workspace.schema"
+import { createWorkspaceSchema, CreateWorkspaceSchemaType } from "../_schemas/create-workspace.schema"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { orpc } from "@/lib/orpc"
+import { toast } from "sonner"
 
 const CreateWorkspace = () => {
 
   const [open, setOpen] = useState(false)
+  const queryClient = useQueryClient()
 
- 
+
 
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -32,8 +36,25 @@ const CreateWorkspace = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof createWorkspaceSchema>) {
-    console.log(values)
+  const createWorkspaceMutation = useMutation(
+    orpc?.workspace?.create?.mutationOptions({
+      onSuccess: (newWorkspace) => {
+        toast.success(`Workspace ${newWorkspace.workspaceName} created!`);
+        queryClient.invalidateQueries({
+          queryKey: orpc?.workspace?.list?.queryKey()
+        })
+        form.reset();
+        setOpen(false);
+        // Optionally, you can invalidate and refetch the workspaces list here
+      },
+      onError: (error) => {
+        toast.error(`Error creating workspace: ${error.message}`);
+      }
+    })
+  )
+
+  function onSubmit(values: CreateWorkspaceSchemaType) {
+    createWorkspaceMutation.mutate(values)
   }
 
   return (
@@ -75,7 +96,9 @@ const CreateWorkspace = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={createWorkspaceMutation?.isPending}>
+              {createWorkspaceMutation?.isPending ? <><Loader2 className="animate-spin"/>Creating... </> : "Create Workspace"}
+            </Button>
           </form>
         </Form>
       </DialogContent>
