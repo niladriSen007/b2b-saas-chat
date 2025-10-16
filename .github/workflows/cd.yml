@@ -36,7 +36,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
+          run-id: ${{ github.event.workflow_run.id }}
           path: next-build.zip
+          github-token: ${{ github.token }}
 
       # 3️⃣ Verify artifact contents
       - name: Verify artifact contents
