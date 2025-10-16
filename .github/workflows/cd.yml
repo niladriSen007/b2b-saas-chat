@@ -36,7 +36,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nextjs-build
-          path: .
+          path: next-build.zip
 
       # 3️⃣ Verify artifact contents
       - name: Verify artifact contents
