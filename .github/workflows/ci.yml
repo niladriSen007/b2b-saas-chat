@@ -20,6 +20,10 @@ jobs:
       KINDE_POST_LOGOUT_REDIRECT_URL: ${{ secrets.KINDE_POST_LOGOUT_REDIRECT_URL }}
       KINDE_POST_LOGIN_REDIRECT_URL: ${{ secrets.KINDE_POST_LOGIN_REDIRECT_URL }}
     steps:
+      - name: Debug env
+        run: echo "KINDE_ISSUER_URL=$KINDE_ISSUER_URL"
+        env:
+          KINDE_ISSUER_URL: ${{ secrets.KINDE_ISSUER_URL }}
       # 1️⃣ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v5
