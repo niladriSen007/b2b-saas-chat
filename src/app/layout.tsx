@@ -1,8 +1,11 @@
+import "@/lib/orpc.server"; // Ensure server-side ORPC is registered
 import { AuthProvider } from "@/providers/auth.provider";
 import { ThemeProvider } from "@/providers/theme.provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css"; 
+import "./globals.css";
+import { QueryProviders } from "@/providers/query.provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +39,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <QueryProviders>
+              {children}
+            </QueryProviders>
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

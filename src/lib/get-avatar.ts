@@ -1,0 +1,1 @@
+export const getAvatar = (userPicture: string | null, userEmail: string) => userPicture ?? `https://avatar.vercel.sh/${userEmail}.png`
