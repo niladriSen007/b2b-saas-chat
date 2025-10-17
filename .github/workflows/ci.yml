@@ -77,3 +77,15 @@ jobs:
 
       - name: Build docker image
         run: docker build -t b2bsaas-chat-nextjs-app .
+
+      - name: Log docker images
+        run: docker images
+
+      - name: Publish docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker tag b2bsaas-chat-nextjs-app $DOCKER_USERNAME/b2bsaas-chat-nextjs-app:latest
+          docker push $DOCKER_USERNAME/b2bsaas-chat-nextjs-app:latest
