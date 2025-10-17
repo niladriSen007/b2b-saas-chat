@@ -74,3 +74,6 @@ jobs:
         with:
           name: public-assets
           path: public/**
+
+      - name: Build docker image
+        run: docker build -t b2bsaas-chat-nextjs-app .
